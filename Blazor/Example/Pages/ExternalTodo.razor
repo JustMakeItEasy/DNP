@@ -1,0 +1,90 @@
+@page "/ExternalTodo"
+@using System.Net.Http.Headers
+@using System.Runtime.Serialization
+@using System.Runtime.Serialization.Json
+@inject System.Net.Http.HttpClient HttpClient
+
+<button class="btn btn-primary" @onclick="Fetch">Fetch Todos</button>
+<form>
+    <label>User Id</label>
+    <input type="text" @bind-value="searchByUserId"/>
+</form>
+<form>
+    <label>Is Completed</label>
+    <input type="text" @bind-value="searchByIsCompleted"/>
+</form>
+@if (todos == null || !todos.Any()) {
+    <p>Nothing to see here</p>
+} else {
+    <table class="table">
+        <thead>
+        <tr>
+            <th>User Id</th>
+            <th>Title</th>
+            <th>Is Completed</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var todo in todos)
+        {
+            <tr>
+                <td>@todo.UserId</td>
+                <td>@todo.Title</td>
+                <td>@todo.IsCompleted</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+
+@code {
+
+    private List<Todo> todos;
+    private string? searchByUserId;
+    private string? searchByIsCompleted;
+    
+    [DataContract(Name = "repo")]
+    public class Todo{
+        [DataMember(Name = "userId")]
+        public string UserId { get; set; }
+        [DataMember(Name = "id")]
+        public string Id { get; set; }
+        [DataMember(Name = "completed")]
+        public bool IsCompleted { get; set; }
+        [DataMember(Name = "title")]
+        public string Title { get; set; }
+    }
+    
+    private async Task Fetch() {
+        
+        var serializer = new DataContractJsonSerializer(typeof(List<Todo>));
+
+        HttpClient.DefaultRequestHeaders.Accept.Clear();
+        HttpClient.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
+        HttpClient.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
+        string ss = buildSearchString();
+
+        string uri = "https://jsonplaceholder.typicode.com/todos"+ss;
+        Console.WriteLine(uri);
+        var streamTask = HttpClient.GetStreamAsync(uri);
+        todos = serializer.ReadObject(await streamTask) as List<Todo>;
+    }
+
+    private string buildSearchString() {
+        string searchString = "?";
+        if (searchByIsCompleted != null) {
+            searchString += "completed=" + searchByIsCompleted;
+        }
+        if (searchByUserId != null) {
+            if (searchString.Length > 1) {
+                searchString += "&";
+            }
+            searchString += "userId=" + searchByUserId;
+        }
+        return searchString;
+    }
+
+}

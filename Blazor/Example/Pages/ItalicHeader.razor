@@ -1,0 +1,36 @@
+
+<h1 >
+    @HeaderText
+    <br/>
+    <div style="font-style:@FontStyle">
+        @ChildContent
+    </div>
+</h1>
+
+<form>
+    <div>
+
+        <input type="checkbox" @bind="ItalicsCheck" />
+        <label class="form-check-label" >Use italics</label>
+    </div>
+
+    <button type="button" class="btn btn-primary" @onclick="UpdateHeading">
+        Update heading
+    </button>
+</form>
+
+
+@code {
+    private string FontStyle = "normal";
+    private bool ItalicsCheck;
+    
+    [Parameter]
+    public string HeaderText {get;set;}
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public void UpdateHeading() {
+        FontStyle= ItalicsCheck ? "italic" : "normal";
+    }
+}

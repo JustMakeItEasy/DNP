@@ -1,0 +1,42 @@
+@page "/CatsOverview"
+@using Example.Data
+@using Microsoft.EntityFrameworkCore
+@inject Example.DataAccess.CatContext catContext;
+
+<h2>View all cats here</h2>
+
+@if (cats == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table" style="width:700px">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Race</th>
+            <th>Image</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var c in cats)
+        {
+            <tr>
+                <td width="33%">@c.Name</td>
+                <td width="33%">@c.Race</td>
+                <td width="33%"><img src="@c.ImageURL" height="200"/></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    List<Cat> cats { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        Task<List<Cat>> listAsync = catContext.Cats.ToListAsync();
+        cats = listAsync.GetAwaiter().GetResult();
+    }
+}
