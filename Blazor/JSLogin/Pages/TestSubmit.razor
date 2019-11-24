@@ -1,0 +1,34 @@
+﻿@page "/Test"
+@inject IJSRuntime jsRuntime
+
+<h1>Test</h1>
+
+
+<button class="btn btn-primary" @onclick="Login">Login</button>
+<button class="btn btn-primary" @onclick="Logout">Logout</button>
+
+@code {
+
+    public async Task Login()
+    {
+        Console.WriteLine("Login here");
+        var interop = new Interop(jsRuntime);
+        string antiforgerytoken = await interop.GetElementByName("__RequestVerificationToken");
+        string Username = "Troels";
+        string Password = "pw";
+        
+        // Here I provide fields matching the arguments of my login method
+        var fields = new { __RequestVerificationToken = antiforgerytoken, username = Username, password = Password};
+        await interop.SubmitForm("/loginRequester/", fields);
+    }
+
+    public async Task Logout() {
+        Console.WriteLine("Logout here");
+        var interop = new Interop(jsRuntime);
+        string antiforgerytoken = await interop.GetElementByName("__RequestVerificationToken");
+        
+        // Here I provide fields matching the arguments of my logout method, i.e. none
+        var fields = new {__RequestVerificationToken = antiforgerytoken};
+        await interop.SubmitForm("/logoutRequester/", fields);
+    }
+}
