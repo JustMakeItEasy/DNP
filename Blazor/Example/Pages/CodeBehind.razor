@@ -1,0 +1,11 @@
+@page "/CodeBehind"
+@inherits Example.Pages.CodeBehindBase
+
+
+<h2>@header</h2>
+<br/>
+<p>Here's my Code Behind example</p>
+
+<input placeholder="Header" @bind="headerToBe" />
+
+<button class="btn btn-primary" @onclick="UpdateHeader">Update</button>

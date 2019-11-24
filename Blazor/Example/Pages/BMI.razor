@@ -1,0 +1,58 @@
+@page "/BMI"
+<h4>Welcome to this BMI calculator</h4>
+<form>
+    <div class="form-group">
+        <label>Weight in kg:</label>
+        <br/>
+        <input @bind="weightInput" width="25px"/>
+    </div>
+    <div>
+        <label>Height:</label>
+        <br/>
+        <input @bind="heightInput" width="25px"/>
+        @(isM?"m ":"cm")
+        <label class="switch">
+            <input type="checkbox" @bind="isM"/>
+            <span class="slider round"></span>
+        </label>
+    </div>
+</form>
+<br/>
+
+<button class="btn btn-primary btn-sm" @onclick="CalculateBMI">Calculate</button>
+@if(resultBMI == 0) {
+    <p>Please input information..</p>
+} else {
+    <p>Your BMI is: <font color=@color>@resultBMI</font></p>
+    @if(resultBMI>39){
+        <p>You fat bastard</p>
+    }
+}
+
+
+@code{
+    private double weightInput;
+    private double heightInput;
+    private double resultBMI;
+    private string color;
+    private bool isM;
+
+    private void CalculateBMI() {
+        double hInM = heightInput;
+        if(!isM){
+            hInM = (heightInput/100.0);
+        }
+        resultBMI = Math.Round(weightInput/(hInM*hInM), 1);
+        if(resultBMI <18) {
+            color = "cyan";
+        }else if(resultBMI <24) {
+            color = "green";
+        } else if(resultBMI < 29) {
+            color = "yellow";
+        } else if(resultBMI < 39) {
+            color = "orange";
+        } else {
+            color = "red";
+        }
+    }
+}
