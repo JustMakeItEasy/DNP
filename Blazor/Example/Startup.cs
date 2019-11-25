@@ -38,26 +38,11 @@ namespace Example
                             opt.UseSqlite("Data Source = Cats.db"));
             
             services.AddRazorPages();
-            /*services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => {
-                options.LoginPath = "/Account/Login";
-                options.AccessDeniedPath = "/AccessDenied";
-            });*/
-            
-            services.AddAuthorization(options => {
-                options.AddPolicy("MustBeNinja", p => p.RequireAuthenticatedUser().RequireClaim("Role","ninja"));
-                options.AddPolicy("MustBePirate", p => p.RequireAuthenticatedUser().RequireClaim("Role","pirate"));
-                options.AddPolicy("MustBeNinjaOrPirate", p => p.RequireAuthenticatedUser().RequireClaim("Role","pirate","ninja"));
-            });
+
             services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddTransient<HttpClient>();
-
+            services.AddTransient<HttpClient>();   
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
