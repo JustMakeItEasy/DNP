@@ -1,4 +1,30 @@
 @page "/ninjapage"
 @attribute [Authorize(Policy = "MustBeNinja") ]
+@using System.Security.Claims
 
 <p>This page can be viewed by ninjas</p>
+<AuthorizeView >
+    <p>hello @context.User.Identity.Name</p>
+    <p>    
+        @MyMethod(context.User.Identity.Name)
+        @OtherMethod(context.User);
+    </p>
+</AuthorizeView>
+
+@code {
+
+    public string MyMethod(string name) {
+        return name + name;
+    }
+
+    // just an example of how to get Claims out of your logged in user.
+    public string OtherMethod(ClaimsPrincipal u) {
+        bool isNinja = u.IsInRole("Ninja");
+        
+        foreach (Claim claim in u.Claims) {
+            Console.WriteLine(claim.Type + ", " +claim.Value);
+        }
+        return "";
+    }
+
+}

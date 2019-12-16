@@ -24,7 +24,8 @@ namespace JSLogin.Pages
  
             var claims = new List<Claim>{
                 new Claim(ClaimTypes.Name, username),
-               // new Claim("Role", "ninja")
+                new Claim("Role", "ninja"),
+                
             };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
